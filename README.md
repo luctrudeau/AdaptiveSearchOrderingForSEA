@@ -1,6 +1,6 @@
 This is the authors version of :
 
-L. Trudeau, S. Coulombe, and C. Desrosiers, “[An Adaptive Search Ordering For Rate-Constrained Successive Elimination Algorithms]()” In 2015 IEEE International Conference on Image Processing (ICIP) (Quebec City, QC, 2015), pp. 207-211. Institute of Electrical and Electronics Engineers. [http://dx.doi.org/10.1109/ICIP.2015.7350789](http://dx.doi.org/10.1109/ICIP.2015.7350789)
+L. Trudeau, S. Coulombe, and C. Desrosiers, “[An Adaptive Search Ordering For Rate-Constrained Successive Elimination Algorithms](http://luctrudeau.github.io/papers/AdaptiveSearchOrderingForSEA.pdf)” In 2015 IEEE International Conference on Image Processing (ICIP) (Quebec City, QC, 2015), pp. 207-211. Institute of Electrical and Electronics Engineers. [http://dx.doi.org/10.1109/ICIP.2015.7350789](http://dx.doi.org/10.1109/ICIP.2015.7350789)
 
 ##BibTeX
 ```
