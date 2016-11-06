@@ -1,0 +1,29 @@
+\tikzstyle{block} = [draw, fill=gray!20, rectangle, 
+    minimum height=3em, minimum width=8cm, text width=7cm]
+\tikzstyle{newblock} = [draw, fill={rgb:red,1;green,2;blue,5}, rectangle, text=white,
+    minimum height=3em, minimum width=8cm, text width=7cm]
+\tikzstyle{arrow} = [->, line width=6pt, style={font=\small}]
+                
+\begin{tikzpicture}[align=center, node distance=10cm, >=latex]
+    \node[newblock] (pruning) {MVP Pruning};
+    \node[newblock] (sort) [right=7cm of pruning] {Sort candidate by RCADS};
+    \node[block] (sea) [below=4cm of sort] {Successive Elimination Algorithm};
+    \node[block] (bma) [below=4cm of sea] {Block Matching Algorithm};
+    \node[newblock] (early) [below right=0cm and 1.5cm of sort] {Early Termination Criterion};
+
+    \draw[arrow] (pruning)  -- node[above, align= left] {Retained\\ Candidates} (sort);
+    \draw[arrow] (sort) node[below right=2cm and 0cm, align= left ] {Sorted\\ Candidates} --  (sea);
+    \draw[arrow] (sea) node[below right=2.5cm and 0cm, align= left ] {Plausible\\ Candidates} -- (bma);
+                    
+    \draw[arrow] (pruning) node[below right=2cm and 0cm, align= left ] {best cost\\ best mv} --  (0,-8.14);
+    \draw[arrow] (bma) node[above left= 0cm and 4cm, align= left ] {best cost\\ best mv} -| (0,-8.14);
+    \draw[arrow] (0,-8.14) -- (sea);
+    \fill[black] (0,-8.14) circle (0.25cm);
+    \draw[arrow, <->] (sea) -| (early);
+    \draw[arrow] (19, -10) -- node[below right= 0cm and 1cm, align= left ] {best cost\\ best mv} (28, -10);
+    \draw[arrow] (-8,-1) -- node[below left= 0cm and -1cm, align= left ] {MVP} (-4,-1);
+    \draw[arrow] (-8,1) -- node[above left= 0cm and -2cm, align= left ] {Candidates} (-4,1);
+    
+    \draw[dashed, thick] (-9.5,-17.5) rectangle (-0.5,-19.5);
+    \fill[fill={rgb:red,1;green,2;blue,5}] (-9,-19) rectangle (-7, -18) node[below right=-0.3cm and 0cm] {\small{Novel element}};
+\end{tikzpicture}

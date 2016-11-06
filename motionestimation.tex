@@ -1,0 +1,40 @@
+\resizebox{0.8\linewidth}{!}{
+\begin{tikzpicture}[every node/.style={minimum size=1cm, font=\tiny},on grid]
+    \tikzstyle{every node}=[font=\tiny]
+    \begin{scope}[
+    	yshift=170,every node/.append style={
+    	    yslant=0.5,xslant=-1},yslant=0.5,xslant=-1
+    	             ]
+        \fill[white,fill opacity=.9] (0,0) rectangle (5,5);
+        \draw[black,very thick] (0,0) rectangle (5,5);
+        \draw[step=5mm, black] (0,0) grid (5,5);
+        \fill[red] (2.5,2.5) rectangle (3,3);
+    \end{scope}
+
+    \begin{scope}[
+    	yshift=0,every node/.append style={
+    	    yslant=0.5,xslant=-1},yslant=0.5,xslant=-1
+    	  ]
+        \fill[white,fill opacity=0.6] (0,0) rectangle (5,5);
+        \draw[black,very thick] (1.5,1.5) rectangle (4,4);
+        \draw[black,ultra thick, dashed] (0,0) rectangle (5,5);
+        \fill[green] (2,2) rectangle (2.5,2.5);
+        \draw[->, ultra thick](2.75,2.75) -- (2.25, 2.25);
+    \end{scope}
+
+    \draw[-latex, ultra thick,dotted](5,9.5)node[right]{Current Frame}
+        to[out=180,in=90] (4,8);
+    \draw[-latex, ultra thick,dotted](5,10.75)node[right]{Current Block ($B$)}
+        to[out=180,in=90] (0,8.9);
+
+	\draw[-latex,ultra thick,dotted] (3,6) node[right]{$i$th Motion Vector $(x_i,y_i)$}
+         to[out=180,in=90] (0,2.75);
+	\draw[-latex,ultra thick,dotted] (4,5) node[right]{Search Area}
+         to[out=180,in=90] (0.6,3.7);
+    \draw[-latex,ultra thick,dotted] (4,4) node[right]{$i$th Block Matching} to[out=180,in=90] (0.2,2.2); 
+    \node at (7.5,3.25) {Candidate ($C(x_i,y_i)$)};
+    \draw[-latex,ultra thick,dotted] (3,1) node[right]{Anchor Frame}
+         to[out=180,in=90] (0.5,0.3);    
+
+\end{tikzpicture}
+}

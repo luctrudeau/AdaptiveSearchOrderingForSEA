@@ -1,0 +1,207 @@
+\documentclass[10pt]{beamer}
+\usepackage{graphics}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[size=custom,width=150,height=80,scale=1.4,orientation=portrait]{beamerposter}
+\usepackage[absolute,overlay]{textpos}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MATH
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+
+\DeclarePairedDelimiter\abs{\lvert}{\rvert}%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% GLOSSARIES
+\usepackage[acronym]{glossaries}
+\loadglsentries{acronyms}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TIKZ
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{tkz-euclide}
+
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes,arrows}
+\usetikzlibrary{arrows.meta}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% REFERENCES
+\usepackage{cleveref}
+
+\crefname{figure}{Fig.}{Figures}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BEAMER SETTINGS
+\setbeamersize{text margin left=28cm,text margin right=2cm}
+\setbeamerfont{normal text}{size=\normalsize}
+\setbeamertemplate{caption}[numbered]
+
+
+\begin{document}
+
+\usebackgroundtemplate{\includegraphics{icip.pdf}}
+
+\begin{frame}[t]
+    \centering
+    
+    %%%%%%%%%%%%%%%%%%%% HEADER %%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    \huge{An Adaptive Search Ordering For Rate-Constrained Successive Elimination Algorithms}
+    
+    \LARGE{Luc Trudeau, Stéphane Coulombe, Christian Desrosiers}
+    
+    \Large{Department of Software and IT Engineering, École de technologie supérieure, Université du Québec, Montréal, Canada}
+    
+    %%%%%%%%%%%%%%%%%%%%%%%%% INTRO %%%%%%%%%%%%%%%%%%%%%%%%%
+    \normalsize
+    
+\begin{columns}[t, onlytextwidth]
+    \begin{column}{0.32\textwidth}
+        \begin{block}{Introduction}
+            \begin{itemize}
+                
+            % Here is a problem
+            \item \Glspl{bma} must select the best candidate block~($C$) from a search area in one or many anchor frames to serve as a predictor for the content of the current block~($B$) (see \cref{fig:MotionEstimation}).
+                
+            % It's an interesting problem
+            \item Beyond HD video formats (e.g., $4\text{K}$ or $8\text{K}$), multiview video content  and feature-rich video compression standards are all factors that require video encoders to consider more block sizes, more anchor frames, and use bigger search areas.
+                
+            \item The solution space for \glspl{bma} is so big, that state of the art approaches only consider a subset of that space and won't always find the optimal solution.
+                
+            % Here is my idea
+            \item We propose an adaptive ordering of block matching candidates that eliminates unnecessary block matching operations and allows for early termination.
+                
+            \begin{figure}[htb]
+                \vspace{-2em}
+                \centering
+                \include{motionestimation}
+                \vspace{-1em}
+                \caption{Block-matching consists of comparing candidate blocks ($C(x_i,y_i)$) in a search area against the current block $B$ using a cost function.}
+                \label{fig:MotionEstimation}
+            \end{figure}
+                
+            \end{itemize}
+        \end{block}
+        
+    %%%%%%%%%%%%%%%%%%%%%%%%% RCSEA %%%%%%%%%%%%%%%%%%%%%%%%%
+
+        \begin{block}{Rate-Constrained Successive Elimination Algorithms}
+            \begin{itemize}
+            \item The \gls{bma} evaluates candidates by computing the \gls{rcsad}
+            \begin{equation}\small
+                \text{RCSAD}(x,y) = \sum{\abs*{B - C(x,y)}} + \lambda R(x,y)\:.
+                \label{eq:RCSAD}
+            \end{equation}
+                
+            \item The \gls{rcsea} uses a 1D projection of the \gls{rcsad}, the \gls{rcads}, as a lower bound for the \gls{rcsad}
+            \begin{equation}\small
+                \text{RCADS}(x,y) = \abs*{\sum{B} - \sum{C(x,y)}} + \lambda R(x,y)\leqslant \text{RCSAD}(x,y)\:.
+                \label{eq:RCADS}
+            \end{equation}
+        
+            \item The \gls{rcsea} can use this lower bound to filters out unnecessary block matching operations. For example, let $(x^*_{i-1},y^*_{i-1})$ be the best candidate found so far,  if
+            \begin{equation}\small
+                \text{RCSAD}(x^*_{i-1},y^*_{i-1}) \leqslant \text{RCADS}(x_i,y_i)\:,
+                \label{eq:RDSEA}
+            \end{equation}
+            then computing $\text{RCSAD}(x_i,y_i)$ is unnecessary.
+            \end{itemize}
+        \end{block}
+    \end{column}
+    %%%%%%%%%%%%%%%%%%%%%%%%% ADAPTIVE SEARCH ORDERING %%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    \begin{column}{0.32\textwidth}
+        \begin{block}{Adaptive Search Ordering}
+           \begin{itemize}
+           \item The efficiency of \gls{rcsea} depends on the ordering of block matching candidates. 
+           \begin{itemize}
+                \item For example, the best filtering is achieved when $(x_1,y_1)$ is the best candidate (see eq.~\ref{eq:RDSEA}).
+           \end{itemize}
+           
+           \item The proposed solution is outlined in \cref{fig:outline}. The main ideas are:
+                \begin{itemize}
+                    \item Prune the candidates with eq.~\ref{eq:RDSEA}, but instead of $(x^*_{i-1},y^*_{i-1})$, we use RCSAD$(x_p,y_p)$ for each candidate, where $(x_p,y_p)$ is the \gls{mvp}.
+                    \item Sort in ascending order the retained candidates by \gls{rcads}.
+                    \item Perform \gls{bma} on the ordered candidates using $RCSEA$.
+                    \begin{itemize}
+                        \item Stop the \gls{bma} when eq.~\ref{eq:RDSEA} is met for a candidate (early termination).
+                    \end{itemize}
+                \end{itemize}
+           \end{itemize}
+            
+            \begin{figure}[htb]
+                \vspace{-2.5em}
+                \centering
+                \include{outline}
+                \vspace{-1.5em}
+                \caption{Outline of the proposed solution. See the paper for a complete algorithm.}
+                \label{fig:outline}
+            \end{figure}
+        \end{block}
+        
+    %%%%%%%%%%%%%%%%%%%%%%%%% EARLY TERMINATION %%%%%%%%%%%%%%%%%%%%%%%%%    
+        \begin{block}{Early Termination}
+             \begin{itemize}
+            \item Let $(x_1,y_1)$ be the best candidate. The \gls{bma} will compute the RCSAD for $\{(x_i,y_i) \mid \text{RCADS}(x_i,y_i) \leqslant \text{RCSAD}(x_1,y_1)\}$.
+            \item Now, let the best candidate be unknown and let the candidates be sorted by \gls{rcads}. The \gls{bma} will compute the RCSAD for $\{(x_i,y_i) \mid \text{RCADS}(x_i,y_i) \leqslant \text{RCSAD}(x^*_{i-1},y^*_{i-1})\}$.
+            \item Both sets contain the same candidates.
+                
+            \end{itemize}         
+            
+            \begin{figure}[htb]
+                \vspace{-2em}
+                \centering
+                    \include{sorted}
+                \vspace{-2em}
+                \caption{Block matching candidates sorted by \gls{rcads}. The early termination criterion is shown in red.}
+                \label{fig:Sorted}
+            \end{figure}
+             
+        \end{block}
+    \end{column}
+        
+    %%%%%%%%%%%%%%%%%%%%%%%%% EXPERIMENTAL RESULTS %%%%%%%%%%%%%%%%%%%%%%%%%    
+    \begin{column}{0.32\textwidth}
+        \begin{block}{Experimental Results}
+            \begin{itemize}
+            \item Our experiments where performed on the first 100 frames of Class C ($832\!\times\!480$) video sequences (``\textit{Basketball Drill}'', ``\textit{Party Scene}'', ``\textit{BQ Mall}'' and ``\textit{Race Horses}'') using the main profile.
+            \item The results are presented by block sizes and by QP values in \cref{fig:SADSavings}.
+            \item The proposed algorithm is more effective for smaller block sizes. 
+                \begin{itemize}
+                    \item Smaller blocks comprise fewer pixels leading to more precise ADS values. This filters out more unnecessary cost function evaluations.
+                \end{itemize}
+            \item As the QP increases, the effectiveness of the proposed algorithm also increases.
+            \end{itemize}
+            
+            \begin{figure}[htb]
+                \vspace{-2em}
+                \centering
+                \include{blockSavings}
+                \vspace{-2em}
+                \caption{Percentage of \gls{sad} operations saved by the proposed solution.}
+                \label{fig:SADSavings}
+            \end{figure}
+        \end{block}
+
+    %%%%%%%%%%%%%%%%%%%%%%%%% CONCLUSION %%%%%%%%%%%%%%%%%%%%%%%%%
+        \begin{block}{Conclusion}
+            We proposed:
+            \begin{itemize}
+            \item An adaptive search ordering for the motion estimation module that evaluates only necessary cost functions.
+            \item An early termination criterion for the \gls{bma}.
+            \end{itemize}
+             Our experiments showed:
+            \begin{itemize}
+            \item  Without our algorithm, an \gls{rcsea} using a spiral scan search ordering in the H.265/HEVC HM reference software would evaluate, on average, 3.5\% of unnecessary cost functions.
+            \item In some instances, the percentage of cost function evaluations can be reduced up to 15\%.
+            \end{itemize}
+        \end{block}
+    \end{column}
+\end{columns}
+\end{frame}
+\end{document}
